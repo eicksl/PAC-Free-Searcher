@@ -1,4 +1,5 @@
 ELECTIONS_HOME = open('elections.txt').read()
+GOOGLE_SEARCH = 'https://google.com/search'
 SENATE_CLASS = '1'
 STATES = {
     'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR',
