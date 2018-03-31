@@ -1,4 +1,6 @@
 from pacfree_searcher import *
 
-# start process
-elections.ElectionsParser()
+
+if __name__ == '__main__':
+    # start process
+    elections.ElectionsParser()
