@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 #from pacfree_hunt.models import Base, Candidate
 from pacfree_searcher.constants import *
+from pacfree_searcher.google import GoogleParser
 import time
 import requests
 
@@ -19,8 +20,9 @@ class ElectionsParser():
     def __init__(self):
         """Initializes the ElectionsParser. This effectively initiates the
         the entire application process."""
+        #self.get_candidate_data('XXXXXX/United_States_House_of_Representatives_elections_in_New_Jersey,_2018', 'New Jersey')
         pass
-
+        
 
     def get_2018_election_urls(self, state):
         """
@@ -123,5 +125,9 @@ class ElectionsParser():
             return
         contact = infobox.find('a', string='Website')
         data['campaign_url'] = None if not contact else contact['href']
+        self.search_google(data)
 
-        print(data)
+
+    def search_google(self, data):
+        """Pass data for a specific candidate to `GoogleParser`."""
+        GoogleParser(data)

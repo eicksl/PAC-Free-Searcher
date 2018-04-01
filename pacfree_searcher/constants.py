@@ -1,6 +1,8 @@
 ELECTIONS_HOME = open('elections.txt').read()
 GOOGLE_SEARCH = 'https://google.com/search'
 SENATE_CLASS = '1'
+TWITTER = 'https://twitter.com'
+FACEBOOK = 'https://www.facebook.com'
 STATES = {
     'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR',
     'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT',
@@ -18,3 +20,9 @@ STATES = {
     'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV',
     'Wisconsin': 'WI', 'Wyoming': 'WY'
 }
+SPECS = set({
+    'pac money', 'corporate pac', 'corporate money', 'money in politics',
+    'corporate influence', 'small dollar donations', 'small dollar donors',
+    'grass roots funded', 'grass roots fundraising', 'corporate pacs',
+    'campaign finance reform', 'special interest groups', 'big money'
+})
