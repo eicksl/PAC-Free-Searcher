@@ -1,5 +1,7 @@
-ELECTIONS_HOME = open('elections.txt').read()
-GOOGLE_SEARCH = 'https://google.com/search'
+ELECTIONS_HOME = open('txt/elections.txt').read()
+GOOGLE_KEY = open('txt/google_key.txt').read()
+GOOGLE_CX = open('txt/google_cx.txt').read()
+GOOGLE_SEARCH = 'https://www.googleapis.com/customsearch/v1'
 SENATE_CLASS = '1'
 TWITTER = 'https://twitter.com'
 FACEBOOK = 'https://www.facebook.com'

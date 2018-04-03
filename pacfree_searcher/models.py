@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 
 
-Base = declarative_base
+Base = declarative_base()
 
 
 class Candidate(Base):
@@ -15,7 +15,8 @@ class Candidate(Base):
     abbr = Column(String(2), nullable=False)
     office = Column(String(10), nullable=False)
     party = Column(String(50), nullable=False)
-    website = Column(String(250), nullable=False)
+    campaign_url = Column(String(250), nullable=False)
+    bp_url = Column(String(250), nullable=False)
     emails = Column(String(250))
     facebook = Column(String(100))
     twitter = Column(String(100))
@@ -28,7 +29,7 @@ class Candidate(Base):
             'abbr': self.abbr,
             'office': self.office,
             'party': self.party,
-            'website': self.website,
+            'website': self.campaign_url,
             'emails': self.emails,
             'facebook': self.facebook,
             'twitter': self.twitter

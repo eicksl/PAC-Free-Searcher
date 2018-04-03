@@ -1,16 +1,11 @@
-#from sqlalchemy import create_engine
-#from sqlalchemy.orm import sessionmaker
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from bs4 import BeautifulSoup
-#from pacfree_hunt.models import Base, Candidate
+from pacfree_searcher.models import Base, Candidate
 from pacfree_searcher.constants import *
 from pacfree_searcher.google import GoogleParser
-import time
-import requests
-
-
-#engine = create_engine('sqlite:///candidates.db')
-#Base.metadata.bind = engine
-#session = sessionmaker(bind=engine)()
 
 
 class ElectionsParser():
@@ -20,9 +15,12 @@ class ElectionsParser():
     def __init__(self):
         """Initializes the ElectionsParser. This effectively initiates the
         the entire application process."""
-        #self.get_candidate_data('XXXXXX/United_States_House_of_Representatives_elections_in_New_Jersey,_2018', 'New Jersey')
-        pass
-        
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+        engine = create_engine('sqlite:///candidates.db')
+        Base.metadata.bind = engine
+        self.db = sessionmaker(bind=engine)()
+        self.get_candidate_data('xxxxxxxxxxxxxxxxxxx')
+
 
     def get_2018_election_urls(self, state):
         """
@@ -130,4 +128,4 @@ class ElectionsParser():
 
     def search_google(self, data):
         """Pass data for a specific candidate to `GoogleParser`."""
-        GoogleParser(data)
+        GoogleParser(data, self.db)
