@@ -1,4 +1,5 @@
 import requests
+import time
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -23,11 +24,14 @@ class ElectionsParser():
 
 
     def search_all_states(self):
-        test = {'Vermont': 'VT'}
-        for state in test.keys():
+        print('Starting search...')
+        for state in STATES.keys():
+            time.sleep(2)
+            print('Searching for candidates in {}...'.format(state))
             urls = self.get_2018_election_urls(state)
             for url in urls:
                 self.search_specific_state(url, state)
+        print('Search complete.')
 
 
     def get_2018_election_urls(self, state):
