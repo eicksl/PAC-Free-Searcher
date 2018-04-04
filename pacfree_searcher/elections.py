@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bs4 import BeautifulSoup
 from pacfree_searcher.constants import *
-from pacfree_searcher.models import Base
+from pacfree_searcher.models import Base, Candidate
 from pacfree_searcher.google import GoogleParser
 
 
@@ -24,13 +24,17 @@ class ElectionsParser():
 
 
     def search_all_states(self):
-        print('Starting search...')
+        print('Starting search...', flush=True)
         for state in STATES.keys():
             time.sleep(2)
-            print('Searching for candidates in {}...'.format(state))
+            print('Searching for candidates in {}...'.format(state), flush=True)
+            before = self.db.query(Candidate).count()
             urls = self.get_2018_election_urls(state)
             for url in urls:
                 self.search_specific_state(url, state)
+            after = self.db.query(Candidate).count()
+            print('Added {} candidates to the database.'
+                  .format(after - before), flush=True)
         print('Search complete.')
 
 

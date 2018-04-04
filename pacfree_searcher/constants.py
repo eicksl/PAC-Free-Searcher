@@ -8,7 +8,7 @@ FACEBOOK = 'https://www.facebook.com'
 STATES = {
     'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR',
     'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT',
-    'Deleware': 'DE', 'Florida': 'FL', 'Georgia': 'GA', 'Hawaii': 'HI',
+    'Delaware': 'DE', 'Florida': 'FL', 'Georgia': 'GA', 'Hawaii': 'HI',
     'Idaho': 'ID', 'Illinois': 'IL', 'Indiana': 'IN', 'Iowa': 'IA',
     'Kansas': 'KS', 'Kentucky': 'KY', 'Louisiana': 'LA', 'Maine': 'ME',
     'Maryland': 'MD', 'Massachusetts': 'MA', 'Michigan': 'MI',
@@ -23,7 +23,8 @@ STATES = {
     'Wisconsin': 'WI', 'Wyoming': 'WY'
 }
 AT_LARGE_STATES = set({
-    'Alaska', 'Deleware', 'Montana', 'North Dakota', 'South Dakota', 'Vermont'
+    'Alaska', 'Delaware', 'Montana', 'North Dakota', 'South Dakota',
+    'Vermont', 'Wyoming'
 })
 SPECS = set({
     'pac money', 'corporate pac', 'corporate money', 'money in politics',

@@ -44,7 +44,7 @@ class GoogleParserTestCases(unittest.TestCase):
     def test_meets_specs(self):
         self.inst.data['campaign_url'] = 'http://www.markmcgovern.com'
         self.assertEqual(self.inst.meets_specs(), False)
-        self.inst.data['campaign_url'] = 'http://www.jimkeady.com'
+        self.inst.data['campaign_url'] = 'https://www.paulajean2018.com'
         self.assertEqual(self.inst.meets_specs(), True)
 
 

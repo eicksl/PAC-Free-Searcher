@@ -41,9 +41,14 @@ class GoogleParser():
             'cx': GOOGLE_CX,
             'q': query
         }
-        resp = requests.get(GOOGLE_SEARCH, params)
-        last_name = self.data['name'].rsplit(' ', 1)[1].lower()
-        for item in resp.json()['items']:
+        resp_json = requests.get(GOOGLE_SEARCH, params).json()
+        try:
+            last_name = self.data['name'].rsplit(' ', 1)[1].lower()
+        except IndexError:
+            last_name = self.data['name']
+        if not 'items' in resp_json:
+            return
+        for item in resp_json['items']:
             url = item['link'].lower()
             split_url = self._split_homepage(url)
             if last_name in split_url:
@@ -101,7 +106,7 @@ class GoogleParser():
             # confirm that at least one item in `SPECS` was matched.
             for item in resp_json['items']:
                 for spec in SPECS:
-                    if spec in item['snippet']:
+                    if spec in item['snippet'].replace('\n', ''):
                         return True
         return False
 
