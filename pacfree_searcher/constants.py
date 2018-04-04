@@ -22,6 +22,9 @@ STATES = {
     'Virginia': 'VA', 'Washington': 'WA', 'West Virginia': 'WV',
     'Wisconsin': 'WI', 'Wyoming': 'WY'
 }
+AT_LARGE_STATES = set({
+    'Alaska', 'Deleware', 'Montana', 'North Dakota', 'South Dakota', 'Vermont'
+})
 SPECS = set({
     'pac money', 'corporate pac', 'corporate money', 'money in politics',
     'corporate influence', 'small dollar donations', 'small dollar donors',

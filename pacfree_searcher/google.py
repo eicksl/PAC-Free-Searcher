@@ -13,6 +13,7 @@ class GoogleParser():
         self.data = data
         if self.data['campaign_url'] is None:
             self.find_campaign_url()
+        print(self.data)
         if self.meets_specs():
             CampaignSiteParser(self.data, db)
 

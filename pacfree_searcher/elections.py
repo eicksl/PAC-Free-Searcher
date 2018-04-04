@@ -3,8 +3,8 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from bs4 import BeautifulSoup
-from pacfree_searcher.models import Base, Candidate
 from pacfree_searcher.constants import *
+from pacfree_searcher.models import Base
 from pacfree_searcher.google import GoogleParser
 
 
@@ -19,7 +19,15 @@ class ElectionsParser():
         engine = create_engine('sqlite:///candidates.db')
         Base.metadata.bind = engine
         self.db = sessionmaker(bind=engine)()
-        self.get_candidate_data('xxxxxxxxxxxxxxxxxxx')
+        self.search_all_states()
+
+
+    def search_all_states(self):
+        test = {'Vermont': 'VT'}
+        for state in test.keys():
+            urls = self.get_2018_election_urls(state)
+            for url in urls:
+                self.search_specific_state(url, state)
 
 
     def get_2018_election_urls(self, state):
@@ -38,7 +46,7 @@ class ElectionsParser():
         return (senate_url, house_url)
 
 
-    def get_candidate_data(self, base_url, state):
+    def search_specific_state(self, base_url, state):
         """
         :param base_url: elections page on which to search
         :param state: US state
@@ -47,12 +55,13 @@ class ElectionsParser():
         """
         resp = requests.get(base_url)
         html = BeautifulSoup(resp.text, 'lxml')
-        house_title = ('United States House of Representatives elections in '
-                       '{}, 2018 - elections').format(state)
-        if html.find('title', string=house_title):
-            self._get_candidate_data_house(html, state)
+        if 'House' in html.find('title').string:
+            if state in AT_LARGE_STATES:
+                self._get_candidate_data_senate_hal(html, state, hal=True)
+            else:
+                self._get_candidate_data_house(html, state)
         else:
-            self._get_candidate_data_senate(html, state)
+            self._get_candidate_data_senate_hal(html, state)
 
 
     def _get_candidate_data_house(self, html, state):
@@ -82,13 +91,16 @@ class ElectionsParser():
                     self.get_party_and_campaign_url(data)
 
 
-    def _get_candidate_data_senate(self, html, state):
+    def _get_candidate_data_senate_hal(self, html, state, hal=False):
         """
-        :param html: senate elections page html for which to parse
+        :param html: senate or hal elections page html for which to parse
         :param state: US state
+        :param hal: whether this is a House election for an at-large district
         :type html: BeautifulSoup object
         :type state: string
+        :type hal: boolean
         """
+        office = 'House-0' if hal else 'Senate-' + SENATE_CLASS
         for elem in html.find_all('li'):
             if (not dict(elem.attrs).get('class', None)
             and elem.next_element.name == 'a'):
@@ -99,7 +111,7 @@ class ElectionsParser():
                         'name': elem.next_element.string,
                         'state': state,
                         'abbr': STATES[state],
-                        'office': 'Senate-' + SENATE_CLASS,
+                        'office': office,
                         'bp_url': ELECTIONS_HOME + elem.next_element['href']
                     }
                     self.get_party_and_campaign_url(data)

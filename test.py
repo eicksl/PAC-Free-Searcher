@@ -35,15 +35,17 @@ class GoogleParserTestCases(unittest.TestCase):
 
 
     def test_get_meets_specs_search_string(self):
-        #self.inst.data['campaign_url'] = 'http://www.jacob2018.com'
-        #print(self.inst._get_meets_specs_search_string())
-        pass
+        self.inst.data['campaign_url'] = 'http://www.bernie.org'
+        print(self.inst._get_meets_specs_search_string())
+
 
 
     def test_meets_specs(self):
         self.inst.data['campaign_url'] = 'http://www.markmcgovern.com'
         self.assertEqual(self.inst.meets_specs(), False)
         self.inst.data['campaign_url'] = 'http://www.jimkeady.com'
+        self.assertEqual(self.inst.meets_specs(), True)
+        self.inst.data['campaign_url'] = 'http://www.bernie.org'
         self.assertEqual(self.inst.meets_specs(), True)
 
 

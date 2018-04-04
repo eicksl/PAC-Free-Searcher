@@ -36,5 +36,22 @@ class Candidate(Base):
         }
 
 
+    class PrimaryDate(Base):
+        __tablename__ = 'primarydate'
+
+        key = Column(Integer, primary_key=True)
+        state = Column(String(50), nullable=False)
+        abbr = Column(String(2), nullable=False)
+        date = Column(String(30), nullable=False)
+
+        @property
+        def serialize(self):
+            return {
+                'state': self.state,
+                'abbr': self.abbr,
+                'date': self.date
+            }
+
+
 engine = create_engine('sqlite:///candidates.db')
 Base.metadata.create_all(engine)

@@ -17,7 +17,6 @@ class CampaignSiteParser():
 
     def get_social_media_urls(self):
         """Grabs Facebook and Twitter URLs from the candidate's homepage."""
-        #urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         self.data['facebook'] = None
         self.data['twitter'] = None
         resp = requests.get(self.data['campaign_url'], verify=False)
