@@ -11,11 +11,25 @@ class GoogleParser():
         """Initializes google search and parsing process using the data for
         the candidate."""
         self.data = data
-        if self.data['campaign_url'] is None:
-            self.find_campaign_url()
-        print(self.data)
-        if self.meets_specs():
+        if self.is_pac_free():
             CampaignSiteParser(self.data, db)
+
+
+    def is_pac_free(self):
+        """If the candidate website scraped from the elections data provider
+        is `None` or does not meet required specifications, `find_campaign_url`
+        is called. If the new URL obtained from Google fails the `meets_specs`
+        test as well, `False` is returned."""
+        if self.data['campaign_url'] and self.meets_specs():
+            return True
+        original = self.data['campaign_url']
+        self.find_campaign_url()
+        # Comparing the new URL to the original prevents unnecessary requests
+        # from being sent to Google's API
+        if (self.data['campaign_url'] and self.data['campaign_url'] != original
+        and self.meets_specs()):
+            return True
+        return False
 
 
     def find_campaign_url(self):
