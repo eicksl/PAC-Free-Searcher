@@ -106,7 +106,8 @@ class GoogleParser():
             # confirm that at least one item in `SPECS` was matched.
             for item in resp_json['items']:
                 for spec in SPECS:
-                    if spec in item['snippet'].replace('\n', ''):
+                    if (spec in item['snippet'].replace('\n', '')
+                    and not self.is_news_url(item['link'])):
                         return True
         return False
 
@@ -118,3 +119,10 @@ class GoogleParser():
         for spec in SPECS:
             str_search += '\"{}\" OR '.format(spec)
         return str_search[:-4]
+
+
+    def is_news_url(self, url):
+        for string in EXCLUDE_URLS:
+            if string in url:
+                return True
+        return False

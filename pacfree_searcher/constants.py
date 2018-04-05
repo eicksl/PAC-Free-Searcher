@@ -30,5 +30,8 @@ SPECS = set({
     'pac money', 'corporate pac', 'corporate money', 'money in politics',
     'corporate influence', 'small dollar donations', 'small dollar donors',
     'grass roots funded', 'grass roots fundraising', 'corporate pacs',
-    'campaign finance reform', 'special interest groups', 'big money'
+    'campaign finance reform', 'big money', 'grassroots campaign'
+})
+EXCLUDE_URLS = set({
+    '/press/', '/news/', '/press-release', '/press_release'
 })
