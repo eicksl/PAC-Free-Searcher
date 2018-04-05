@@ -27,7 +27,7 @@ class ElectionsParser():
         print('Starting search...', flush=True)
         for state in STATES.keys():
             time.sleep(2)
-            print('Searching for candidates in {}...'.format(state), flush=True)
+            print('\nSearching for candidates in {}...'.format(state), flush=True)
             before = self.db.query(Candidate).count()
             urls = self.get_2018_election_urls(state)
             for url in urls:
@@ -35,7 +35,7 @@ class ElectionsParser():
             after = self.db.query(Candidate).count()
             print('Added {} candidates to the database.'
                   .format(after - before), flush=True)
-        print('Search complete.')
+        print('\nSearch complete.')
 
 
     def get_2018_election_urls(self, state):
@@ -48,9 +48,14 @@ class ElectionsParser():
         state = state.replace(' ', '_')
         resp = requests.get(ELECTIONS_HOME + state)
         html = BeautifulSoup(resp.text, 'lxml')
-        urls = html.select('#state-portal-election-box')[0].p.find_all('a')
-        senate_url = ELECTIONS_HOME + urls[1]['href']
-        house_url = ELECTIONS_HOME + urls[2]['href']
+        anchors = html.select('#state-portal-election-box')[0].p.find_all('a')
+        senate_url, house_url = (None, None)
+        for anchor in anchors:
+            if anchor.string:
+                if 'U.S. Senate' in anchor.string:
+                    senate_url = ELECTIONS_HOME + anchor['href'][1:]
+                elif 'U.S. House' in anchor.string:
+                    house_url = ELECTIONS_HOME + anchor['href'][1:]
         return (senate_url, house_url)
 
 
@@ -61,6 +66,8 @@ class ElectionsParser():
         :type base_url: string
         :type state: string
         """
+        if base_url is None:
+            return
         resp = requests.get(base_url)
         html = BeautifulSoup(resp.text, 'lxml')
         if 'House' in html.find('title').string:
@@ -79,24 +86,28 @@ class ElectionsParser():
         :type html: BeautifulSoup object
         :type state: string
         """
+        candidate_found = False
         district = None
         for anchor in html.find_all('a'):
             if (anchor.get('title', None)
             and 'Congressional District election, 2018' in anchor['title']
             and anchor.parent.name != 'center'):
                 district = anchor.string.split(' ')[1]
-            elif anchor.parent.name == 'li':
-                if (' - Incumbent' in anchor.parent
+            elif anchor.parent.name == 'li' or anchor.parent.name == 'td':
+                if (' - Incumbent' in anchor.parent and anchor.string
                 or anchor.next_sibling and anchor.next_sibling.name == 'sup'):
+                    assert anchor.string is not None and len(anchor.string) > 0
                     assert district is not None
+                    candidate_found = True
                     data = {
                         'name': anchor.string,
                         'state': state,
                         'abbr': STATES[state],
                         'office': 'House-' + district,
-                        'bp_url': ELECTIONS_HOME + anchor['href']
+                        'bp_url': ELECTIONS_HOME + anchor['href'][1:]
                     }
                     self.get_party_and_campaign_url(data)
+        assert candidate_found
 
 
     def _get_candidate_data_senate_hal(self, html, state, hal=False):
@@ -108,21 +119,23 @@ class ElectionsParser():
         :type state: string
         :type hal: boolean
         """
+        candidate_found = False
         office = 'House-0' if hal else 'Senate-' + SENATE_CLASS
-        for elem in html.find_all('li'):
-            if (not dict(elem.attrs).get('class', None)
-            and elem.next_element.name == 'a'):
-                if (elem.next_element.next_sibling
-                and elem.next_element.next_sibling.name == 'sup'
-                or ' - Incumbent' in elem):
+        for anchor in html.find_all('a'):
+            if anchor.parent.name == 'li' or anchor.parent.name == 'td':
+                if (' - Incumbent' in anchor.parent and anchor.string
+                or anchor.next_sibling and anchor.next_sibling.name == 'sup'):
+                    assert anchor.string is not None and len(anchor.string) > 0
+                    candidate_found = True
                     data = {
-                        'name': elem.next_element.string,
+                        'name': anchor.string,
                         'state': state,
                         'abbr': STATES[state],
                         'office': office,
-                        'bp_url': ELECTIONS_HOME + elem.next_element['href']
+                        'bp_url': ELECTIONS_HOME + anchor['href'][1:]
                     }
                     self.get_party_and_campaign_url(data)
+        assert candidate_found
 
 
     def get_party_and_campaign_url(self, data):

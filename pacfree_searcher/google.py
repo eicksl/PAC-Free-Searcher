@@ -122,6 +122,10 @@ class GoogleParser():
 
 
     def is_news_url(self, url):
+        """Returns `True` if the `url` string contains a substring indicating
+        that the content of the Google API snippet has been extracted from a
+        news page."""
+        url = url.lower()
         for string in EXCLUDE_URLS:
             if string in url:
                 return True

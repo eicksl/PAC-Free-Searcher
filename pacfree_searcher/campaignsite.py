@@ -1,4 +1,5 @@
 import requests
+from requests.exceptions import ConnectionError
 from bs4 import BeautifulSoup
 from pacfree_searcher.constants import FACEBOOK, TWITTER
 from pacfree_searcher.dbmanager import DBManager
@@ -19,7 +20,10 @@ class CampaignSiteParser():
         """Grabs Facebook and Twitter URLs from the candidate's homepage."""
         self.data['facebook'] = None
         self.data['twitter'] = None
-        resp = requests.get(self.data['campaign_url'], verify=False)
+        try:
+            resp = requests.get(self.data['campaign_url'], verify=False)
+        except ConnectionError:
+            return
         html = BeautifulSoup(resp.text, 'lxml')
         for anchor in html.find_all('a'):
             try:
