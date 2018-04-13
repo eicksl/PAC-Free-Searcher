@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 
@@ -36,22 +36,22 @@ class Candidate(Base):
         }
 
 
-    class PrimaryDate(Base):
-        __tablename__ = 'primarydate'
+class PrimaryDate(Base):
+    __tablename__ = 'primarydate'
 
-        key = Column(Integer, primary_key=True)
-        state = Column(String(50), nullable=False)
-        abbr = Column(String(2), nullable=False)
-        date = Column(String(30), nullable=False)
+    key = Column(Integer, primary_key=True)
+    state = Column(String(50), nullable=False)
+    abbr = Column(String(2), nullable=False)
+    date = Column(String(30), nullable=False)
 
-        @property
-        def serialize(self):
-            return {
-                'state': self.state,
-                'abbr': self.abbr,
-                'date': self.date
-            }
+    @property
+    def serialize(self):
+        return {
+            'state': self.state,
+            'abbr': self.abbr,
+            'date': self.date
+        }
 
 
-engine = create_engine('sqlite:///candidates.db')
+engine = create_engine('sqlite:///dates.db')
 Base.metadata.create_all(engine)

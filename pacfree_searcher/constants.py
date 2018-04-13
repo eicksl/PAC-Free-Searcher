@@ -5,6 +5,8 @@ GOOGLE_SEARCH = 'https://www.googleapis.com/customsearch/v1'
 SENATE_CLASS = '1'
 TWITTER = 'https://twitter.com'
 FACEBOOK = 'https://www.facebook.com'
+DATES_SOURCE = ('http://www.ncsl.org/research/elections-and-campaigns'
+                '/2018-state-primary-election-dates.aspx')
 STATES = {
     'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR',
     'California': 'CA', 'Colorado': 'CO', 'Connecticut': 'CT',
