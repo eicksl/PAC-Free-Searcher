@@ -20,7 +20,9 @@ class ElectionsParser():
         engine = create_engine('sqlite:///candidates.db')
         Base.metadata.bind = engine
         self.db = sessionmaker(bind=engine)()
-        self.search_all_states()
+        #self.search_all_states()
+        self.search_specific_state('https://ballotpedia.org/United_States_House_of_Representatives_elections_in_Pennsylvania,_2018', 'Pennsylvania')
+        # x
 
 
     def search_all_states(self):
@@ -94,8 +96,13 @@ class ElectionsParser():
             and anchor.parent.name != 'center'):
                 district = anchor.string.split(' ')[1]
             elif anchor.parent.name == 'li' or anchor.parent.name == 'td':
-                if (' - Incumbent' in anchor.parent and anchor.string
-                or anchor.next_sibling and anchor.next_sibling.name == 'sup'):
+                if (anchor.string and len(anchor.string.split(' ')) == 2
+                and '/' + anchor.string.replace(' ', '_') == anchor['href']
+                and 'class' not in anchor.attrs):
+                    if district is None or anchor.string in ['Democratic Party', 'Republican Party']:
+                        continue
+                    if anchor.string == 'Federal Politics':
+                        break
                     assert anchor.string is not None and len(anchor.string) > 0
                     assert district is not None
                     candidate_found = True
@@ -106,7 +113,7 @@ class ElectionsParser():
                         'office': 'House-' + district,
                         'bp_url': ELECTIONS_HOME + anchor['href'][1:]
                     }
-                    self.get_party_and_campaign_url(data)
+                    #self.get_party_and_campaign_url(data)
         assert candidate_found
 
 
@@ -134,7 +141,8 @@ class ElectionsParser():
                         'office': office,
                         'bp_url': ELECTIONS_HOME + anchor['href'][1:]
                     }
-                    self.get_party_and_campaign_url(data)
+                    #self.get_party_and_campaign_url(data)
+                    #print(data)
         assert candidate_found
 
 
@@ -156,7 +164,7 @@ class ElectionsParser():
             return
         contact = infobox.find('a', string='Website')
         data['campaign_url'] = None if not contact else contact['href']
-        self.search_google(data)
+        #self.search_google(data)
 
 
     def search_google(self, data):
