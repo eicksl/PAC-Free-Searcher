@@ -20,15 +20,15 @@ class ElectionsParser():
         engine = create_engine('sqlite:///additions.db')
         Base.metadata.bind = engine
         self.db = sessionmaker(bind=engine)()
-        #self.search_all_states()
-        self.search_specific_state('https://ballotpedia.org/United_States_Senate_election_in_Pennsylvania,_2018', 'Pennsylvania')
+        self.search_all_states()
+        #self.search_specific_state('https://ballotpedia.org/United_States_Senate_election_in_Pennsylvania,_2018', 'Pennsylvania')
         # x
 
 
     def search_all_states(self):
         print('Starting search...', flush=True)
-        for state in STATES.keys():
-            time.sleep(2)
+        for state in ['Pennsylvania']:
+            #time.sleep(2)
             print('\nSearching for candidates in {}...'.format(state), flush=True)
             before = self.db.query(Candidate).count()
             urls = self.get_2018_election_urls(state)
